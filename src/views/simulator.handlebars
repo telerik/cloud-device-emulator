@@ -1,0 +1,15 @@
+<iframe id="simulator"
+        src="https://appetize.io/embed/{{key}}?device={{device}}&scale=100&autoplay=true&orientation=portrait&deviceColor=black&xdocMsg=true&params={{params}}"
+        frameborder="0"
+        scrolling="no"
+        style="overflow: hidden; height: 100%; width: 100%; position: absolute;"
+        height="100%"
+        width="100%">
+</iframe>
+
+<div id="handshake" data="{{key}}-{{device}}"></div>
+
+<img id="screenshot" />
+
+<script src="vendors/socket.io.1.7.3.js" ></script>
+<script src="scripts/frame-connection.js" ></script>
