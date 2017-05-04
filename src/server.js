@@ -25,6 +25,11 @@ module.exports = {
       server.listen(port, () => {
         resolve(server.address().port);
       });
+
+      server.on('error', (err) => {
+        console.log(err)
+        reject(err)
+      });
     })
   }
 }
