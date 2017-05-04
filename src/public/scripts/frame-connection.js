@@ -1,9 +1,14 @@
 (function (io) {
     var url = window.location.protocol + "//" + window.location.host;
     var socket = io.connect(url);
+    var handshake = document.getElementById('handshake').getAttribute('data');
+
+    window.onbeforeunload = function (e) {
+        socket.emit("device-disconnected", handshake)
+        return;
+    };
 
     socket.on('connect', function (data) {
-        var handshake = document.getElementById('handshake').getAttribute('data');
         socket.emit('handshake', handshake);
     });
 

@@ -17,6 +17,9 @@ module.exports = {
         client.on('handshake', (data) => {
           socketConnections[data] = client;
         });
+        client.on('device-disconnected', (data) => {
+          delete socketConnections[data];
+        })
       });
 
       server.listen(port, () => {
