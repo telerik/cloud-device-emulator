@@ -9,6 +9,9 @@ module.exports = {
     successMesseges: {
         success: 'success'
     },
+    statusMassages: {
+        OK: 'OK'
+    },
     methods: {
         rotateLeft: 'rotateLeft',
         rotateRight: 'rotateRight',
@@ -46,5 +49,16 @@ module.exports = {
     views: {
         simulator: 'simulator',
         error: 'error'
+    },
+    os: {
+        android: 'android',
+        ios: 'ios'
+    },
+    device: {
+        android: 'nexus'
+    },
+    responseCode: {
+        ok: 200,
+        badRequest: 400
     }
 }

@@ -7,6 +7,7 @@ module.exports = (app) => {
     app.get('/', controllers.layout.get);
 
     //API
+    app.get('/api/health', routeMiddware.healthcheckMiddleware);
     app.post('/api/simulators/:device/:publicKey/rotateleft', routeMiddware.populateSocket, controllers.simulator.rotateLeft);
     app.post('/api/simulators/:device/:publicKey/rotateright', routeMiddware.populateSocket, controllers.simulator.rotateRight);
     app.post('/api/simulators/:device/:publicKey/emitHomeButton', routeMiddware.populateSocket, controllers.simulator.emitHomeButton);

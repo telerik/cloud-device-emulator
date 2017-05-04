@@ -1,12 +1,12 @@
 'use strict'
 
-const constatnts = require('../common/constants');
+const constants = require('../common/constants');
 const utils = require('../common/utils');
 
 module.exports = {
     populateSocket: (req, res, next) => {
-        req.checkParams(constatnts.params.publicKey, constatnts.errorMessages.requiredParameter).notEmpty();
-        req.checkParams(constatnts.params.device, constatnts.errorMessages.requiredParameter).notEmpty();
+        req.checkParams(constants.params.publicKey, constants.errorMessages.requiredParameter).notEmpty();
+        req.checkParams(constants.params.device, constants.errorMessages.requiredParameter).notEmpty();
         const errors = req.validationErrors();
         if (errors) {
             return utils.errorResponse(res, errors);
@@ -17,9 +17,15 @@ module.exports = {
         req.simulatorSocket = req.socketConnections[`${publicKey}-${device}`];
 
         if (!req.simulatorSocket) {
-            return utils.errorResponse(res, [{ msg: constatnts.errorMessages.deviceNotConnetcted }]);
+            return utils.errorResponse(res, [{ msg: constants.errorMessages.deviceNotConnetcted }]);
         }
 
         next();
+    },
+
+    healthcheckMiddleware: (req, res, next) => {
+        res.status(constants.responseCode.ok)
+            .json({ status: constants.statusMassages.OK })
+            .end();
     }
 }
