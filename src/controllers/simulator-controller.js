@@ -138,4 +138,21 @@ module.exports = {
         req.simulatorSocket.emit(constants.methods.setLocation, { location: [lat, long] })
         return utils.successResponse(res);
     },
+
+    getConnectedDevice: (req, res) => {
+        let devices = [];
+        for (let key in req.socketConnections) {
+            if (req.socketConnections.hasOwnProperty(key)) {
+                const deviceInfo = key.split('-');
+                devices.push({
+                    publicKey: deviceInfo[0],
+                    model: deviceInfo[1],
+                    os: deviceInfo[1].toLowerCase().startsWith(constants.device.android) ? constants.os.android : constants.os.ios
+                })
+            }
+        }
+
+        res.status(constants.responseCode.ok)
+            .json(devices);
+    }
 }
