@@ -3,11 +3,12 @@
 const exphbs = require('express-handlebars');
 const express = require('express');
 const expressValidator = require('express-validator');
+const path = require('path');
 
 module.exports = (app, socketConnections) => {
-    app.engine('handlebars', exphbs({ defaultLayout: '../../src/views/layouts/main' }));
+    app.engine('handlebars', exphbs({ defaultLayout: path.join(__dirname,'../views/layouts/main'), extname: '.handlebars' }));
     app.set('view engine', 'handlebars');
-    app.set('views', './src/views');
+    app.set('views', path.join(__dirname,'../views'));
 
     app.use(expressValidator());
 
