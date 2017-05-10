@@ -148,7 +148,7 @@ module.exports = {
                     publicKey: deviceInfo[0],
                     model: deviceInfo[1],
                     os: deviceInfo[1].toLowerCase().startsWith(constants.device.android) ? constants.os.android : constants.os.ios
-                })
+                });
             }
         }
 

@@ -60,5 +60,9 @@ module.exports = {
     responseCode: {
         ok: 200,
         badRequest: 400
+    },
+    server: {
+        host: 'localhost',
+        healthUrlPath: '/api/health'
     }
 }

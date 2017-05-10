@@ -3,12 +3,12 @@
 const controllers = require('../controllers');
 const routeMiddware = require('./route-middlewares');
 
-module.exports = (app) => {
+module.exports = app => {
     app.get('/', controllers.layout.get);
 
     //API
     app.get('/api/health', routeMiddware.healthcheckMiddleware);
-    app.get('/api/simulators/getConnectedDevice', controllers.simulator.getConnectedDevice);
+    app.get('/api/simulators/devices', controllers.simulator.getConnectedDevice);
     app.post('/api/simulators/:device/:publicKey/rotateleft', routeMiddware.populateSocket, controllers.simulator.rotateLeft);
     app.post('/api/simulators/:device/:publicKey/rotateright', routeMiddware.populateSocket, controllers.simulator.rotateRight);
     app.post('/api/simulators/:device/:publicKey/emitHomeButton', routeMiddware.populateSocket, controllers.simulator.emitHomeButton);

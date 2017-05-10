@@ -25,7 +25,6 @@ module.exports = {
 
     healthcheckMiddleware: (req, res, next) => {
         res.status(constants.responseCode.ok)
-            .json({ status: constants.statusMassages.OK })
-            .end();
+            .json({ status: constants.statusMassages.OK });
     }
 }

@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-    start: (port) => {
+    start: port => {
         return new Promise((resolve, reject) => {
             const express = require('express');
             const app = express();
@@ -13,24 +13,21 @@ module.exports = {
             require('./config/express')(app, socketConnections);
             require('./config/routes')(app);
 
-            socket.on('connection', (client) => {
-                client.on('handshake', (data) => {
+            socket.on('connection', client => {
+                client.on('handshake', data => {
                     socketConnections[data] = client;
                 });
 
-                client.on('device-disconnected', (data) => {
+                client.on('device-disconnected', data => {
                     delete socketConnections[data];
-                })
+                });
             });
 
             server.listen(port, () => {
                 resolve(server.address().port);
             });
 
-            server.on('error', (err) => {
-                console.log(err)
-                reject(err)
-            });
+            server.on('error', err => reject(err));
         })
     }
 }

@@ -4,6 +4,7 @@ const fs = require('fs');
 const http = require('http');
 const path = require('path');
 
+const constants = require('./src/common/constants');
 const server = require('./src/server');
 
 const tempDir = path.join(__dirname, 'tmp')
@@ -13,59 +14,53 @@ module.exports = {
     startServer: () => {
         let currentServerPort;
         return getState()
-            .then((port) => {
-                return checkServerHelth(port)
-                    .then(serverHealth => {
-                        currentServerPort = port
-                        if (!serverHealth) {
-                            return server.start(port)
-                                .catch(initServerWithFreePort)
-                                .then((port) => {
-                                    currentServerPort = port
-                                    watchStatusFile()
-                                })
-                                .then(() => { return currentServerPort })
-                        }
-                        return currentServerPort;
-                    })
+            .then(port => checkServerHealth(port)
+                .then(serverHealth => {
+                    currentServerPort = port
+                    if (!serverHealth) {
+                        return server.start(port)
+                            .catch(initServerWithFreePort)
+                            .then(port => {
+                                currentServerPort = port;
+                                watchStatusFile();
+                                return currentServerPort;
+                            })
+                    }
 
-            }, (err) => {
-                return initServerWithFreePort()
-                    .then((port) => {
-                        currentServerPort = port
-                        watchStatusFile()
-                    })
-                    .then(() => { return currentServerPort })
-            })
+                    return currentServerPort;
+                })
+            , err => initServerWithFreePort()
+                .then(port => {
+                    currentServerPort = port;
+                    watchStatusFile();
+                    return currentServerPort;
+                })
+            )
     }
 }
 
 function initServerWithFreePort() {
     return server.start(0)
-        .then(saveState)
+        .then(saveState);
 }
 
 function saveState(port) {
     return new Promise((resolve, reject) => {
-        ensureDirExists(tempDir)
-        fs.writeFile(statusFilePath, port, (err) => {
-            err ? reject(err) : resolve(port)
-        })
-    })
+        ensureDirExists(tempDir);
+        fs.writeFile(statusFilePath, port, err => err ? reject(err) : resolve(port))
+    });
 }
 
 function getState() {
     return new Promise((resolve, reject) => {
-        ensureDirExists(tempDir)
+        ensureDirExists(tempDir);
         if (fs.existsSync(statusFilePath)) {
-            fs.readFile(statusFilePath, 'utf8', (err, data) => {
-                err ? reject(err) : resolve(data);
-            })
+            fs.readFile(statusFilePath, 'utf8', (err, data) => err ? reject(err) : resolve(data));
             return;
         }
 
         reject();
-    })
+    });
 }
 
 function watchStatusFile() {
@@ -76,20 +71,16 @@ function watchStatusFile() {
     });
 }
 
-function checkServerHelth(port) {
+function checkServerHealth(port) {
     return new Promise((resolve, reject) => {
         const getRequest = http.get({
-            host: `localhost`,
+            host: constants.server.host,
             port: port,
-            path: '/api/health'
-        }, (res) => {
-            resolve(res.statusCode === 200)
-        });
+            path: constants.server.healthUrlPath
+        }, res => resolve(res.statusCode === 200));
 
-        getRequest.on('error', (err) => {
-            resolve(false)
-        });
-    })
+        getRequest.on('error', err => resolve(false));
+    });
 }
 
 function ensureDirExists(dirPath) {
