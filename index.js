@@ -16,7 +16,7 @@ module.exports = {
         return getState()
             .then(port => checkServerHealth(port)
                 .then(serverHealth => {
-                    currentServerPort = port
+                    currentServerPort = port;
                     if (!serverHealth) {
                         return server.start(port)
                             .catch(initServerWithFreePort)
@@ -24,7 +24,7 @@ module.exports = {
                                 currentServerPort = port;
                                 watchStatusFile();
                                 return currentServerPort;
-                            })
+                            });
                     }
 
                     return currentServerPort;
@@ -35,7 +35,7 @@ module.exports = {
                     watchStatusFile();
                     return currentServerPort;
                 })
-            )
+            );
     }
 }
 
@@ -47,16 +47,18 @@ function initServerWithFreePort() {
 function saveState(port) {
     return new Promise((resolve, reject) => {
         ensureDirExists(tempDir);
-        fs.writeFile(statusFilePath, port, err => err ? reject(err) : resolve(port))
+        fs.writeFile(statusFilePath, port, err => err ? reject(err) : resolve(port));
     });
 }
 
 function getState() {
     return new Promise((resolve, reject) => {
-        ensureDirExists(tempDir);
+        if (!fs.existsSync(tempDir)) {
+           return reject();
+        }
+
         if (fs.existsSync(statusFilePath)) {
-            fs.readFile(statusFilePath, 'utf8', (err, data) => err ? reject(err) : resolve(data));
-            return;
+            return fs.readFile(statusFilePath, 'utf8', (err, data) => err ? reject(err) : resolve(data));
         }
 
         reject();

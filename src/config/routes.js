@@ -1,13 +1,14 @@
 'use strict';
 
 const controllers = require('../controllers');
+const constants = require('../common/constants');
 const routeMiddware = require('./route-middlewares');
 
 module.exports = app => {
     app.get('/', controllers.layout.get);
 
     //API
-    app.get('/api/health', routeMiddware.healthcheckMiddleware);
+    app.get(constants.server.healthUrlPath, routeMiddware.healthcheckMiddleware);
     app.get('/api/simulators/devices', controllers.simulator.getConnectedDevice);
     app.post('/api/simulators/:device/:publicKey/rotateleft', routeMiddware.populateSocket, controllers.simulator.rotateLeft);
     app.post('/api/simulators/:device/:publicKey/rotateright', routeMiddware.populateSocket, controllers.simulator.rotateRight);
