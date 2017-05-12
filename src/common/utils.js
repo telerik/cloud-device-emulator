@@ -3,13 +3,13 @@
 const constants = require('../common/constants');
 
 module.exports = {
-    successResponse: (res) => {
-        res.status(200)
+    successResponse: res => {
+        res.status(constants.responseCode.ok)
             .json({ msg: constants.successMesseges.success });
     },
 
     errorResponse: (res, errors) => {
-        res.status(400)
+        res.status(constants.responseCode.badRequest)
             .json({ errors });
     }
 }
