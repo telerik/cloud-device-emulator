@@ -44,7 +44,8 @@ module.exports = {
         lat: 'lat',
         long: 'long',
         publicKey: 'publicKey',
-        device: 'device'
+        device: 'device',
+        deviceIdentifier: 'deviceIdentifier'
     },
     views: {
         simulator: 'simulator',
@@ -63,6 +64,11 @@ module.exports = {
     },
     server: {
         host: 'localhost',
-        healthUrlPath: '/api/health'
+        healthUrlPath: '/api/health',
+        devicesUrlPath: '/api/simulators/devices'
+    },
+    eventNames: {
+        deviceFound: "deviceFound",
+        deviceLost: "deviceLost"
     }
 }
