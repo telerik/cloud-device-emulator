@@ -143,12 +143,7 @@ module.exports = {
         let devices = [];
         for (let key in req.socketConnections) {
             if (req.socketConnections.hasOwnProperty(key)) {
-                const deviceInfo = key.split('-');
-                devices.push({
-                    publicKey: deviceInfo[0],
-                    model: deviceInfo[1],
-                    os: deviceInfo[1].toLowerCase().startsWith(constants.device.android) ? constants.os.android : constants.os.ios
-                });
+                devices.push(utils.getDeviceInfo(key));
             }
         }
 

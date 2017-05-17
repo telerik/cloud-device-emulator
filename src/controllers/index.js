@@ -1,6 +1,6 @@
 'use strict';
 
-const layoutController = require('./layout-controler');
+const layoutController = require('./layout-controller');
 const simulatorController = require('./simulator-controller');
 
 module.exports = {
