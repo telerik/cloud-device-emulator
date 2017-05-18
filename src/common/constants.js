@@ -53,8 +53,8 @@ module.exports = {
         error: 'error'
     },
     os: {
-        android: 'android',
-        ios: 'ios'
+        android: 'Android',
+        ios: 'iOS'
     },
     device: {
         android: 'nexus'
