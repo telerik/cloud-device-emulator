@@ -2,6 +2,7 @@
     var url = window.location.protocol + "//" + window.location.host;
     var socket = io.connect(url);
     var handshake = document.getElementById('handshake').getAttribute('data');
+    var iframe = document.getElementById('simulator');
 
     window.onbeforeunload = function (e) {
         socket.emit("device-disconnected", handshake)
@@ -12,8 +13,12 @@
         socket.emit('handshake', handshake);
     });
 
+    socket.on('refresh', function () {
+        iframe.contentWindow.location.reload(true);
+    });
+
     socket.on('rotateLeft', function () {
-        rotateLeft()
+        rotateLeft();
     });
 
     socket.on('rotateRight', function () {
@@ -76,8 +81,6 @@
         requestSession();
     });
 
-    // Sending messages to iframe from parent window
-    var iframe = document.getElementById('simulator');
     function emitHomeButton() {
         iframe.contentWindow.postMessage('emitHomeButton', '*');
     }

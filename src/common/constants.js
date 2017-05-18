@@ -30,7 +30,8 @@ module.exports = {
         setLanguage: 'setLanguage',
         setLocation: 'setLocation',
         publicKey: 'publicKey',
-        device: 'device'
+        device: 'device',
+        refresh: 'refresh'
     },
     params: {
         scale: 'scale',

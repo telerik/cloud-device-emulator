@@ -8,3 +8,8 @@ interface IAppetizeDeviceBasicInfo {
 	model: string;
 	os: string;
 }
+
+interface ICloudDeviceServerInfo {
+	port: number;
+	host: string;
+}
