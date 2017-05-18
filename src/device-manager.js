@@ -8,10 +8,10 @@ class DeviceManager {
     }
 
     refresh(deviceIdentifier) {
-        this.deviceEmitterInstance.getSeverAddress()
+        return this.deviceEmitterInstance.getSeverAddress()
             .then(serverInfo => {
                 this.serverInfo = serverInfo;
-                return this._sendRequest(this._getDeviceInfo(deviceIdentifier), "refresh");
+                return this._sendRequest(this._getDeviceInfo(deviceIdentifier), constants.methods.refresh);
             });
     }
 
@@ -31,12 +31,11 @@ class DeviceManager {
                 }
             };
 
-            const req = http.request(options, (res) => {
+            const req = http.request(options, res => {
                 let rawData = '';
                 res.on(constants.eventNames.data, chunk => { rawData += chunk; });
                 res.on(constants.eventNames.end, () => {
-                    const parsedData = JSON.parse(rawData);
-                    res.statusCode === constants.responseCode.ok ? resolve(parsedData) : reject(parsedData);
+                    res.statusCode === constants.responseCode.ok ? resolve() : reject(JSON.parse(rawData));
                 });
             });
 
