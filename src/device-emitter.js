@@ -20,8 +20,8 @@ class DeviceEmitter extends EventEmitter {
                     path: constants.server.devicesUrlPath
                 }, res => {
                     let rawData = '';
-                    res.on('data', chunk => { rawData += chunk; });
-                    res.on('end', () => {
+                    res.on(constants.eventNames.data, chunk => { rawData += chunk; });
+                    res.on(constants.eventNames.end, () => {
                         const parsedData = JSON.parse(rawData);
                         parsedData.forEach(device => {
                             this.addDevice(device);
@@ -42,10 +42,10 @@ class DeviceEmitter extends EventEmitter {
     }
 
     getSeverAddress() {
-        return !this.port ? this.startServerPromise : {
+        return !this.port ? this.startServerPromise : Promise.resolve({
             host: constants.server.host,
             port: this.port
-        };
+        });
     }
 
     addDevice(device) {

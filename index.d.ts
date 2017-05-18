@@ -3,4 +3,5 @@
 declare module "cloud-device-emulator" {
 	function getSeverAddress(): Promise<ICloudDeviceServerInfo>;
 	var deviceEmitter: CloudDeviceEmitter;
+	function refresh(deviceIdentifier: string): Promise<string>
 }

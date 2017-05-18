@@ -14,7 +14,7 @@
     });
 
     socket.on('refresh', function () {
-        iframe.contentWindow.location.reload(true);
+        iframe.src = iframe.src;
     });
 
     socket.on('rotateLeft', function () {

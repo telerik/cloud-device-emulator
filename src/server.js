@@ -39,7 +39,7 @@ module.exports = {
                 resolve(server.address().port);
             });
 
-            server.on('error', err => reject(err));
+            server.on(constants.eventNames.error, err => reject(err));
         })
     }
 }

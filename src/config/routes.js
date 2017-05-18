@@ -26,4 +26,5 @@ module.exports = app => {
     app.post('/api/simulators/:device/:publicKey/:deviceIdentifier/pasteText', routeMiddware.populateSocket, controllers.simulator.pasteText);
     app.post('/api/simulators/:device/:publicKey/:deviceIdentifier/setLanguage', routeMiddware.populateSocket, controllers.simulator.setLanguage);
     app.post('/api/simulators/:device/:publicKey/:deviceIdentifier/setLocation', routeMiddware.populateSocket, controllers.simulator.setLocation);
+    app.post('/api/simulators/:device/:publicKey/:deviceIdentifier/refresh', routeMiddware.populateSocket, controllers.simulator.refresh);
 };
