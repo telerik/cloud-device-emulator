@@ -1,6 +1,10 @@
 interface CloudDeviceEmitter {
 	on(event: string, listener: Function): this;
-	getCurrentlyAttachedDevices(): IAppetizeDeviceBasicInfo[];
+	getCurrentlyAttachedDevices(): IAttachedDevices;
+}
+
+interface IAttachedDevices {
+	[key: string]: IAppetizeDeviceBasicInfo;
 }
 
 interface IAppetizeDeviceBasicInfo {
