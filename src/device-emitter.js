@@ -24,7 +24,7 @@ class DeviceEmitter extends EventEmitter {
                     res.on('end', () => {
                         const parsedData = JSON.parse(rawData);
                         parsedData.forEach(device => {
-                            this.devices[device.identifier] = device;
+                            this.addDevice(device);
                         });
                     });
                 });
@@ -61,6 +61,10 @@ class DeviceEmitter extends EventEmitter {
 
         delete this.devices[deviceIdentifier];
         this._raiseOnDeviceLost(device);
+    }
+
+    getCurrentlyAttachedDevices() {
+        return this.devices;
     }
 
     _raiseOnDeviceFound(device) {
