@@ -49,7 +49,7 @@ class DeviceManager {
     }
 
     _getUrl(deviceInfo, urlPath) {
-        return `/api/simulators/${deviceInfo.model}/${deviceInfo.publicKey}/${deviceInfo.identifier}/${urlPath}`
+        return `/api/simulators/${deviceInfo.model}/${deviceInfo.publicKey}/${deviceInfo.identifier}/${urlPath}`;
     }
 
     _getDeviceInfo(deviceIdentifier) {
