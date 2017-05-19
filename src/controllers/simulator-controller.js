@@ -149,5 +149,10 @@ module.exports = {
 
         res.status(constants.responseCode.ok)
             .json(devices);
+    },
+
+    refresh: (req, res) => {
+        req.simulatorSocket.emit(constants.methods.refresh);
+        return utils.successResponse(res);
     }
 }

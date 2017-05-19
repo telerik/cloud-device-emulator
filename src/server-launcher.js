@@ -85,7 +85,7 @@ function checkServerHealth(port) {
             path: constants.server.healthUrlPath
         }, res => resolve(res.statusCode === 200));
 
-        getRequest.on('error', err => resolve(false));
+        getRequest.on(constants.eventNames.error, err => resolve(false));
     });
 }
 
