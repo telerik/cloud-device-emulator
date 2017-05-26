@@ -7,12 +7,12 @@ const path = require('path');
 const constants = require('./common/constants');
 const utils = require('./common/utils');
 
+const logger = require('./logger');
 const DeviceEmitter = require('./device-emitter');
 
 module.exports = {
     start: port => {
         return new Promise((resolve, reject) => {
-            const deviceEmitterInstance = new DeviceEmitter();
             const express = require('express');
             const app = express();
             const server = require('http').createServer(app);
@@ -26,16 +26,17 @@ module.exports = {
             socket.on('connection', client => {
                 client.on('handshake', deviceIdentifier => {
                     socketConnections[deviceIdentifier] = client;
-                    deviceEmitterInstance.addDevice(utils.getDeviceInfo(deviceIdentifier));
+                    new DeviceEmitter().addDevice(utils.getDeviceInfo(deviceIdentifier));
                 });
 
                 client.on('device-disconnected', deviceIdentifier => {
                     delete socketConnections[deviceIdentifier];
-                    deviceEmitterInstance.removeDevice(deviceIdentifier);
+                    new DeviceEmitter().removeDevice(deviceIdentifier);
                 });
             });
 
             server.listen(port, () => {
+                logger.log("Server stared listening");
                 resolve(server.address().port);
             });
 

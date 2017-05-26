@@ -38,3 +38,5 @@ jspm_packages
 
 # Misc
 cloud-device-emulator-*.tgz
+src/tmp
+.vscode

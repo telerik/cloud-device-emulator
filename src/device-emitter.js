@@ -2,7 +2,10 @@
 
 const EventEmitter = require("events").EventEmitter;
 const constants = require("./common/constants");
-const serverLauncher = require("./server-launcher");
+const utils = require("./utils");
+const path = require("path");
+const fs = require("fs");
+const child_process = require("child_process");
 const http = require("http");
 
 let instance = null;
@@ -12,27 +15,40 @@ class DeviceEmitter extends EventEmitter {
         super();
         if (!instance) {
             this.devices = {};
-            this.startServerPromise = serverLauncher.startServer().then(port => {
-                this.port = port;
-                http.get({
-                    host: constants.server.host,
-                    port: port,
-                    path: constants.server.devicesUrlPath
-                }, res => {
-                    let rawData = '';
-                    res.on(constants.eventNames.data, chunk => { rawData += chunk; });
-                    res.on(constants.eventNames.end, () => {
-                        const parsedData = JSON.parse(rawData);
-                        parsedData.forEach(device => {
-                            this.addDevice(device);
-                        });
-                    });
-                });
+            const fileName = new Date().getTime();
+            utils.ensureDirExistsRecursive(constants.logFilesLocation.tempDir);
+            const outFileName = path.join(constants.logFilesLocation.tempDir, `${fileName}.log`);
+            const portFileName = path.join(constants.logFilesLocation.tempDir, `${fileName}.log`);
+            const out = fs.openSync(outFileName, 'a');
+            const err = fs.openSync(path.join(constants.logFilesLocation.tempDir, `${fileName}.err`), 'a');
+            this.startServerPromise = new Promise((resolve, reject) => {
+                child_process.spawn(process.argv[0], [path.join(__dirname, "server-launcher.js")], { detached: true, stdio: ['ignore', out, err] }).unref();
+                const intervalHandle = setInterval(() => {
+                    const contents = fs.readFileSync(outFileName).toString();
+                    if (contents) {
+                        clearInterval(intervalHandle);
+                        this.port = +fs.readFileSync(constants.logFilesLocation.statusFilePath).toString();
+                        http.get({
+                            host: constants.server.host,
+                            port: this.port,
+                            path: constants.server.devicesUrlPath
+                        }, res => {
+                            let rawData = '';
+                            res.on(constants.eventNames.data, chunk => { rawData += chunk; });
+                            res.on(constants.eventNames.end, () => {
+                                const parsedData = JSON.parse(rawData);
+                                parsedData.forEach(device => {
+                                    this.addDevice(device);
+                                });
 
-                return {
-                    host: constants.server.host,
-                    port: port
-                };
+                                resolve({
+                                    host: constants.server.host,
+                                    port: this.port
+                                });
+                            });
+                        });
+                    }
+                }, 400);
             });
 
             instance = this;
@@ -65,6 +81,23 @@ class DeviceEmitter extends EventEmitter {
 
     getCurrentlyAttachedDevices() {
         return this.devices;
+    }
+
+    killServer() {
+        return this.getSeverAddress()
+            .then(serverInfo => new Promise((resolve, reject) => {
+                http.get({
+                    host: serverInfo.host,
+                    port: serverInfo.port,
+                    path: constants.server.quitPath
+                }, res => {
+                    let rawData = '';
+                    res.on(constants.eventNames.data, chunk => { rawData += chunk; });
+                    res.on(constants.eventNames.end, () => {
+                        resolve(JSON.parse(rawData));
+                    });
+                });
+            }));
     }
 
     _raiseOnDeviceFound(device) {
