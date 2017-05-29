@@ -5,40 +5,28 @@ const http = require('http');
 const path = require('path');
 
 const constants = require('./common/constants');
+const logger = require('./logger');
+const server = require('./server');
+const utils = require('./utils');
 
-const tempDir = path.join(__dirname, 'tmp');
-const statusFilePath = path.join(tempDir, 'status.txt');
+function startServer() {
+    return getState()
+        .then(port => checkServerHealth(port)
+            .then(serverHealth => {
+                if (!serverHealth) {
+                    return server.start(port)
+                        .catch(initServerWithFreePort)
+                        .then(port => {
+                            watchStatusFile(port);
+                        });
+                }
 
-let server = null;
-
-module.exports = {
-    startServer: () => {
-        server = require('./server');
-        let currentServerPort;
-        return getState()
-            .then(port => checkServerHealth(port)
-                .then(serverHealth => {
-                    currentServerPort = port;
-                    if (!serverHealth) {
-                        return server.start(port)
-                            .catch(initServerWithFreePort)
-                            .then(port => {
-                                currentServerPort = port;
-                                watchStatusFile();
-                                return currentServerPort;
-                            });
-                    }
-
-                    return currentServerPort;
-                })
-            , err => initServerWithFreePort()
-                .then(port => {
-                    currentServerPort = port;
-                    watchStatusFile();
-                    return currentServerPort;
-                })
-            );
-    }
+                logger.log("Stopping this instance, server already running.");
+            }),
+        err => initServerWithFreePort(err)
+            .then(port => {
+                watchStatusFile(port);
+            }));
 }
 
 function initServerWithFreePort(err) {
@@ -48,19 +36,19 @@ function initServerWithFreePort(err) {
 
 function saveState(port) {
     return new Promise((resolve, reject) => {
-        ensureDirExists(tempDir);
-        fs.writeFile(statusFilePath, port, err => err ? reject(err) : resolve(port));
+        utils.ensureDirExistsRecursive(constants.logFilesLocation.statusFileDir);
+        fs.writeFile(constants.logFilesLocation.statusFilePath, port, err => err ? reject(err) : resolve(port));
     });
 }
 
 function getState() {
     return new Promise((resolve, reject) => {
-        if (!fs.existsSync(tempDir)) {
+        if (!fs.existsSync(constants.logFilesLocation.logsDir)) {
             return reject();
         }
 
-        if (fs.existsSync(statusFilePath)) {
-            return fs.readFile(statusFilePath, 'utf8', (err, data) => {
+        if (fs.existsSync(constants.logFilesLocation.statusFilePath)) {
+            return fs.readFile(constants.logFilesLocation.statusFilePath, 'utf8', (err, data) => {
                 err ? reject(err) : resolve(data)
             });
         }
@@ -69,8 +57,9 @@ function getState() {
     });
 }
 
-function watchStatusFile() {
-    fs.watch(tempDir, (event, fileName) => {
+function watchStatusFile(port) {
+    utils.ensureDirExistsRecursive(constants.logFilesLocation.statusFileDir);
+    return fs.watch(constants.logFilesLocation.statusFileDir, (event, fileName) => {
         if (event === 'rename') {
             process.exit(1);
         }
@@ -89,8 +78,4 @@ function checkServerHealth(port) {
     });
 }
 
-function ensureDirExists(dirPath) {
-    if (!fs.existsSync(dirPath)) {
-        fs.mkdirSync(dirPath);
-    }
-}
+startServer();

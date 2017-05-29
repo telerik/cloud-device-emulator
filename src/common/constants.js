@@ -1,6 +1,18 @@
 'use strict';
 
+const path = require('path');
+const packageName = "cloud-device-emulator";
+
+const winLogFilesLocation = path.join(process.env.APPDATA || "", packageName);
+const unixLogFilesLocation = path.join(process.env.HOME, ".local", "share", packageName);
+const logsDir = process.platform === "win32" ? winLogFilesLocation : unixLogFilesLocation;
+const statusFileDir = path.join(logsDir, "health");
+
 module.exports = {
+    common: {
+        name: packageName,
+        logFilesDeleteDaysNumber: 30
+    },
     errorMessages: {
         requiredParameter: 'The parameter is required.',
         scaleErrorMessage: 'The parameter must be a number between 10 and 100.',
@@ -11,6 +23,13 @@ module.exports = {
     },
     statusMassages: {
         OK: 'OK'
+    },
+    logFilesLocation: {
+        win: winLogFilesLocation,
+        unix: unixLogFilesLocation,
+        logsDir,
+        statusFileDir,
+        statusFilePath: path.join(statusFileDir, 'status.txt')
     },
     methods: {
         rotateLeft: 'rotateLeft',
@@ -66,7 +85,8 @@ module.exports = {
     server: {
         host: 'localhost',
         healthUrlPath: '/api/health',
-        devicesUrlPath: '/api/simulators/devices'
+        devicesUrlPath: '/api/simulators/devices',
+        quitPath: '/api/quit'
     },
     eventNames: {
         deviceFound: "deviceFound",
