@@ -16,11 +16,10 @@ class DeviceEmitter extends EventEmitter {
         if (!instance) {
             this.devices = {};
             const fileName = new Date().getTime();
-            utils.ensureDirExistsRecursive(constants.logFilesLocation.tempDir);
-            const outFileName = path.join(constants.logFilesLocation.tempDir, `${fileName}.log`);
-            const portFileName = path.join(constants.logFilesLocation.tempDir, `${fileName}.log`);
+            utils.ensureDirExistsRecursive(constants.logFilesLocation.logsDir);
+            const outFileName = path.join(constants.logFilesLocation.logsDir, `${fileName}.log`);
             const out = fs.openSync(outFileName, 'a');
-            const err = fs.openSync(path.join(constants.logFilesLocation.tempDir, `${fileName}.err`), 'a');
+            const err = fs.openSync(path.join(constants.logFilesLocation.logsDir, `${fileName}.err`), 'a');
             this.startServerPromise = new Promise((resolve, reject) => {
                 child_process.spawn(process.argv[0], [path.join(__dirname, "server-launcher.js")], { detached: true, stdio: ['ignore', out, err] }).unref();
                 const intervalHandle = setInterval(() => {

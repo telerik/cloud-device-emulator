@@ -43,7 +43,7 @@ function saveState(port) {
 
 function getState() {
     return new Promise((resolve, reject) => {
-        if (!fs.existsSync(constants.logFilesLocation.tempDir)) {
+        if (!fs.existsSync(constants.logFilesLocation.logsDir)) {
             return reject();
         }
 

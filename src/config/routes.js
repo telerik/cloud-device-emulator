@@ -11,7 +11,7 @@ module.exports = app => {
         res.status(constants.responseCode.ok)
             .json({ status: constants.statusMassages.OK });
 
-        utils.deleteFilesOlderThan(constants.logFilesLocation.tempDir, constants.common.logFilesDeleteDaysNumber);
+        utils.deleteFilesOlderThan(constants.logFilesLocation.logsDir, constants.common.logFilesDeleteDaysNumber);
         fs.unlinkSync(constants.logFilesLocation.statusFilePath);
     });
     app.get('/', controllers.layout.get);

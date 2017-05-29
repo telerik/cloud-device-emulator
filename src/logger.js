@@ -1,12 +1,12 @@
 'use strict';
 
-function log() {
-    const args = [new Date()].concat(Array.prototype.slice.call(arguments));
+function log(...args) {
+    args.unshift(new Date());
     return console.log.apply(console, args);
 }
 
-function error() {
-    const args = [new Date()].concat(Array.prototype.slice.call(arguments));
+function error(...args) {
+    args.unshift(new Date());
     return console.error.apply(console, args);
 }
 

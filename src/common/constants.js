@@ -5,8 +5,8 @@ const packageName = "cloud-device-emulator";
 
 const winLogFilesLocation = path.join(process.env.APPDATA || "", packageName);
 const unixLogFilesLocation = path.join(process.env.HOME, ".local", "share", packageName);
-const tempDir = process.platform === "win32" ? winLogFilesLocation : unixLogFilesLocation;
-const statusFileDir = path.join(tempDir, "health");
+const logsDir = process.platform === "win32" ? winLogFilesLocation : unixLogFilesLocation;
+const statusFileDir = path.join(logsDir, "health");
 
 module.exports = {
     common: {
@@ -27,7 +27,7 @@ module.exports = {
     logFilesLocation: {
         win: winLogFilesLocation,
         unix: unixLogFilesLocation,
-        tempDir,
+        logsDir,
         statusFileDir,
         statusFilePath: path.join(statusFileDir, 'status.txt')
     },
