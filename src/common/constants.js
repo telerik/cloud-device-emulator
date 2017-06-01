@@ -2,6 +2,7 @@
 
 const path = require('path');
 const packageName = "cloud-device-emulator";
+const osenv = require('osenv');
 
 const winLogFilesLocation = path.join(process.env.APPDATA || "", packageName);
 const unixLogFilesLocation = path.join(osenv.home(), ".local", "share", packageName);
