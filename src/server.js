@@ -6,9 +6,8 @@ const path = require('path');
 
 const constants = require('./common/constants');
 const utils = require('./common/utils');
-
+const _ = require('lodash');
 const logger = require('./logger');
-const DeviceEmitter = require('./device-emitter');
 
 module.exports = {
     start: port => {
@@ -19,19 +18,33 @@ module.exports = {
             const socket = require('socket.io')(server);
 
             let socketConnections = {};
+            let deviceEmitterInstanceClients = {};
 
             require('./config/express')(app, socketConnections);
             require('./config/routes')(app);
 
+
             socket.on('connection', client => {
-                client.on('handshake', deviceIdentifier => {
-                    socketConnections[deviceIdentifier] = client;
-                    new DeviceEmitter().addDevice(utils.getDeviceInfo(deviceIdentifier));
+                client.on(constants.eventNames.deviceEmitter, emitterId => {
+                    deviceEmitterInstanceClients[emitterId] = client;
                 });
 
-                client.on('device-disconnected', deviceIdentifier => {
-                    delete socketConnections[deviceIdentifier];
-                    new DeviceEmitter().removeDevice(deviceIdentifier);
+                client.on('handshake', fullDeviceIdentifier => {
+                    socketConnections[fullDeviceIdentifier] = client;
+                    _(deviceEmitterInstanceClients)
+                        .values()
+                        .each(deviceEmitterClient => {
+                            deviceEmitterClient.emit(constants.eventNames.deviceFound, utils.getDeviceInfo(fullDeviceIdentifier));
+                        });
+                });
+
+                client.on('device-disconnected', fullDeviceIdentifier => {
+                    delete socketConnections[fullDeviceIdentifier];
+                    _(deviceEmitterInstanceClients)
+                        .values()
+                        .each(deviceEmitterInstance => {
+                            deviceEmitterInstance.emit(constants.eventNames.deviceLost, utils.getDeviceInfo(fullDeviceIdentifier).identifier);
+                        });
                 });
             });
 

@@ -92,6 +92,7 @@ module.exports = {
     eventNames: {
         deviceFound: "deviceFound",
         deviceLost: "deviceLost",
+        deviceEmitter: "deviceEmitter",
         data: "data",
         error: "error",
         end: "end"

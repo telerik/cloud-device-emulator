@@ -3,8 +3,8 @@ const constants = require('./common/constants');
 const DeviceEmitter = require('./device-emitter');
 
 class DeviceManager {
-    constructor() {
-        this.deviceEmitterInstance = new DeviceEmitter();
+    constructor(deviceEmitterInstance) {
+        this.deviceEmitterInstance = deviceEmitterInstance;
     }
 
     refresh(deviceIdentifier) {

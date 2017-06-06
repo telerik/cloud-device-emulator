@@ -7,6 +7,8 @@ const path = require("path");
 const fs = require("fs");
 const child_process = require("child_process");
 const http = require("http");
+const socketClient = require('socket.io-client');
+const uuid = require('uuid');
 
 let instance = null;
 
@@ -46,6 +48,16 @@ class DeviceEmitter extends EventEmitter {
                                 });
                             });
                         });
+
+                        const id = uuid.v4();
+                        this.client = socketClient(`http://${constants.server.host}:${this.port}`);
+                        this.client.on(constants.eventNames.deviceFound, device => {
+                            this.addDevice(device);
+                        });
+                        this.client.on(constants.eventNames.deviceLost, deviceIdentifier => {
+                            this.removeDevice(deviceIdentifier);
+                        });
+                        this.client.emit(constants.eventNames.deviceEmitter, id);
                     }
                 }, 400);
             });
@@ -97,6 +109,10 @@ class DeviceEmitter extends EventEmitter {
                     });
                 });
             }));
+    }
+
+    dispose() {
+        this.client.close();
     }
 
     _raiseOnDeviceFound(device) {

@@ -1,6 +1,7 @@
 interface CloudDeviceEmitter {
 	on(event: string, listener: Function): this;
 	getCurrentlyAttachedDevices(): IAttachedDevices;
+	dispose(): void;
 }
 
 interface IAttachedDevices {
