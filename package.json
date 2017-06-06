@@ -1,6 +1,6 @@
 {
   "name": "cloud-device-emulator",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "cloud-device-emulator",
   "main": "index.js",
   "types": "index.d.ts",
@@ -16,9 +16,12 @@
     "express-validator": "3.1.3",
     "osenv": "0.1.4",
     "socket.io": "1.7.3",
+    "socket.io-client": "2.0.2",
     "uuid": "3.0.1"
   },
   "devDependencies": {
+    "@types/socket.io": "^1.4.29",
+    "@types/socket.io-client": "^1.4.29",
     "@types/uuid": "2.0.29"
   }
 }
