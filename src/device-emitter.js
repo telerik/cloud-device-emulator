@@ -50,14 +50,14 @@ class DeviceEmitter extends EventEmitter {
                         });
 
                         const id = uuid.v4();
-                        const client = socketClient(`http://${constants.server.host}:${this.port}`);
-                        client.on(constants.eventNames.deviceFound, device => {
+                        this.client = socketClient(`http://${constants.server.host}:${this.port}`);
+                        this.client.on(constants.eventNames.deviceFound, device => {
                             this.addDevice(device);
                         });
-                        client.on(constants.eventNames.deviceLost, deviceIdentifier => {
+                        this.client.on(constants.eventNames.deviceLost, deviceIdentifier => {
                             this.removeDevice(deviceIdentifier);
                         });
-                        client.emit(constants.eventNames.deviceEmitter, id);
+                        this.client.emit(constants.eventNames.deviceEmitter, id);
                     }
                 }, 400);
             });
@@ -109,6 +109,10 @@ class DeviceEmitter extends EventEmitter {
                     });
                 });
             }));
+    }
+
+    dispose() {
+        this.client.close();
     }
 
     _raiseOnDeviceFound(device) {
