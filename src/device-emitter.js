@@ -16,6 +16,7 @@ class DeviceEmitter extends EventEmitter {
     constructor() {
         super();
         if (!instance) {
+            this._isDisposed = false;
             this.devices = {};
             const fileName = new Date().getTime();
             utils.ensureDirExistsRecursive(constants.logFilesLocation.logsDir);
@@ -25,6 +26,11 @@ class DeviceEmitter extends EventEmitter {
             this.startServerPromise = new Promise((resolve, reject) => {
                 child_process.spawn("node", [path.join(__dirname, "server-launcher.js")], { detached: true, stdio: ['ignore', out, err] }).unref();
                 const intervalHandle = setInterval(() => {
+                    if (this._isDisposed) {
+                        clearInterval(intervalHandle);
+                        return;
+                    }
+
                     const contents = fs.readFileSync(outFileName).toString();
                     if (contents) {
                         clearInterval(intervalHandle);
@@ -112,7 +118,10 @@ class DeviceEmitter extends EventEmitter {
     }
 
     dispose() {
-        this.client.close();
+        this._isDisposed = true;
+        if (this.client) {
+            this.client.close();
+        }
     }
 
     _raiseOnDeviceFound(device) {
