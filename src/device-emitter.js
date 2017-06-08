@@ -23,7 +23,7 @@ class DeviceEmitter extends EventEmitter {
             const out = fs.openSync(outFileName, 'a');
             const err = fs.openSync(path.join(constants.logFilesLocation.logsDir, `${fileName}.err`), 'a');
             this.startServerPromise = new Promise((resolve, reject) => {
-                child_process.spawn(process.argv[0], [path.join(__dirname, "server-launcher.js")], { detached: true, stdio: ['ignore', out, err] }).unref();
+                child_process.spawn("node", [path.join(__dirname, "server-launcher.js")], { detached: true, stdio: ['ignore', out, err] }).unref();
                 const intervalHandle = setInterval(() => {
                     const contents = fs.readFileSync(outFileName).toString();
                     if (contents) {
