@@ -1,6 +1,6 @@
 {
   "name": "cloud-device-emulator",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "cloud-device-emulator",
   "main": "index.js",
   "types": "index.d.ts",
