@@ -96,5 +96,57 @@ module.exports = {
         data: "data",
         error: "error",
         end: "end"
+    },
+    deviceSizes: {
+        iphone4s: {
+            width: 370,
+            height: 733
+        },
+        iphone5s: {
+            width: 365,
+            height: 782
+        },
+        iphone6: {
+            width: 416,
+            height: 870
+        },
+        iphone6plus: {
+            width: 680,
+            height: 1420,
+            scale: 75
+        },
+        ipadair: {
+            width: 864,
+            height: 1287,
+            scale: 75
+        },
+        iphone6s: {
+            width: 416,
+            height: 870
+        },
+        iphone6splus: {
+            width: 690,
+            height: 1420,
+            scale: 75
+        },
+        ipadair2: {
+            width: 864,
+            height: 1287,
+            scale: 75
+        },
+        nexus5: {
+            width: 400,
+            height: 795
+        },
+        nexus7: {
+            width: 728,
+            height: 1268,
+            scale: 75
+        },
+        nexus9: {
+            width: 866,
+            height: 1288,
+            scale: 75
+        }
     }
-}
+};
