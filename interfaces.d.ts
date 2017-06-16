@@ -5,10 +5,10 @@ interface CloudDeviceEmitter {
 }
 
 interface IAttachedDevices {
-	[key: string]: IAppetizeDeviceBasicInfo;
+	[key: string]: ICloudEmulatorDeviceBasicInfo;
 }
 
-interface IAppetizeDeviceBasicInfo {
+interface ICloudEmulatorDeviceBasicInfo {
 	identifier: string;
 	publicKey: string;
 	model: string;
